@@ -1,0 +1,25 @@
+# Каркас: сервисы будут донастроены по мере реализации.
+services:
+  qdrant:
+    image: qdrant/qdrant
+    ports: ["6333:6333"]
+    volumes: [qdrant_data:/qdrant/storage]
+
+  postgres:
+    image: postgres:16
+    env_file: .env
+    volumes: [pg_data:/var/lib/postgresql/data]
+
+  api:
+    build: ./backend
+    env_file: .env
+    ports: ["8080:8080"]
+    depends_on: [qdrant, postgres]
+
+  # vllm:       # on-prem LLM (нужен GPU)
+  # langfuse:   # опционально, наблюдаемость
+  # frontend:   # Streamlit/Gradio -> SPA
+
+volumes:
+  qdrant_data:
+  pg_data:
